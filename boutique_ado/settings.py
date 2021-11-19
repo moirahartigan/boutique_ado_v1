@@ -175,5 +175,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Stripe
 FREE_DELIVERY_THRESHOLD = 50
 STANDARD_DELIVERY_PERCENTAGE = 10
+STRIPE_CURRENCY = 'usd'
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
+
+# The reason we're getting these from the environment
+# is because even though the public key is already in our github from the last commit.
+# We really don't want the secret key in there because the secret key can
+# be used to do everything on stripe including creating charges
+# making payments, issuing refunds, and even updating our own account information.
+# So it's really important to keep the secret key safe and out of version control.
+# The public key is meant to be public so that doesn't really matter.
+# But for consistency, I'm adding it here anyway.
