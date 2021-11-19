@@ -17,7 +17,7 @@ def update_on_save(sender, instance, created, **kwargs):
     instance.order.update_total() # we just have to access instance.order which refers to the order this specific line item is related to. And call the update_total method on it.
 
 @receiver(post_delete, sender=OrderLineItem) # to execute this function anytime the post_save signal is sent
-def update_on_save(sender, instance, **kwargs):
+def update_on_delete(sender, instance, **kwargs):
     """
     Update order total on lineitem delete
     """
