@@ -48,7 +48,11 @@ def checkout(request):
         }
         order_form = OrderForm(form_data)  # create an instance of the form using the form data from line 17
         if order_form.is_valid():  # if the form is valid we will save the order
-            order = order_form.save()
+            order = order_form.save(commit=False)  # prevent multiple save events from being executed on the database By adding commit equals false here to prevent the first one from happening
+            pid = request.POST.get('client_secret').split('_secret')[0]
+            order.stripe_pid = pid
+            order.original_bag = json.dumps(bag)
+            order.save()
             for item_id, item_data in bag.items():  # then itterate throught the bag items to create each line item
                 try:
                     product = Product.objects.get(id=item_id)  # first we get the product id out of the bag
