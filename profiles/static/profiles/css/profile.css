@@ -1,0 +1,24 @@
+#profile-update-form .form-control {
+    color: #000;
+}
+
+#profile-update-form input::placeholder {
+    color: #aab7c4;
+}
+
+/* since the country field is no longer required.
+The CSS on the invalid pseudo-class that's been used to properly colour
+the same field on the order form no longer works.
+To fix this we could make the country field required on the profile.
+But that would be really awkward and annoying since it would be the only required field.
+And there wouldn't really be a good reason for it.
+Instead we can fix it with a combination of CSS and a little JavaScript. */
+
+#id_default_country,
+#id_default_country option:not(:first-child) {
+    color: #000;
+}
+
+#id_default_country option:first-child {
+    color: #aab7c4;
+}

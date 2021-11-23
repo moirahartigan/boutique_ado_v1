@@ -15,13 +15,13 @@ class UserProfile(models.Model):
     # And each profile can only be attached to one user The rest of the fields in this model are the delivery information fields we want the
     # user to be able to provide defaults for.
     # These can come directly from the order model.
-    default_phone_number = models.CharField(max_length=20, null=True, blank=True)  # add default to the beginning of each to be clear what they are for
-    default_country = CountryField(blank_label='Country *', null=True, blank=True)
-    default_postcode = models.CharField(max_length=20, null=True, blank=True)
-    default_town_or_city = models.CharField(max_length=40, null=True, blank=True)
+    default_phone_number = models.CharField(max_length=20, null=True, blank=True)
     default_street_address1 = models.CharField(max_length=80, null=True, blank=True)
     default_street_address2 = models.CharField(max_length=80, null=True, blank=True)
+    default_town_or_city = models.CharField(max_length=40, null=True, blank=True)
     default_county = models.CharField(max_length=80, null=True, blank=True)
+    default_postcode = models.CharField(max_length=20, null=True, blank=True)
+    default_country = CountryField(blank_label='Country', null=True, blank=True)
 
     def __str__(self):
         return self.user.username   # returns the user name
