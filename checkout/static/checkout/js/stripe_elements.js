@@ -35,9 +35,9 @@ var card = elements.create('card', {style: style});
 card.mount('#card-element');
 
 // Handle realtime validation errors on the card element
-card.addEventListener('change', function (event) { // add a listener on card element for the change event. every time it changes we'll check to see if there are any errors
+card.addEventListener('change', function (event) {   // add a listener on card element for the change event. every time it changes we'll check to see if there are any errors
     var errorDiv = document.getElementById('card-errors');
-    if (event.error) { // If so we'll display them in the card errors div we created near the card element on the checkout page.
+    if (event.error) {   // If so we'll display them in the card errors div we created near the card element on the checkout page.
         var html = `
             <span class="icon" role="alert">
                 <i class="fas fa-times"></i>
@@ -71,7 +71,7 @@ form.addEventListener('submit', function(ev) {
     var url = '/checkout/cache_checkout_data/';
 
     $.post(url, postData).done(function () {
-        stripe.confirmCardPayment(clientSecret, {  // It uses the stripe.confirm card payment method to send the card information securely to stripe.
+        stripe.confirmCardPayment(clientSecret, {   // It uses the stripe.confirm card payment method to send the card information securely to stripe.
             payment_method: {
                 card: card,
                 billing_details: {
@@ -99,9 +99,9 @@ form.addEventListener('submit', function(ev) {
                     state: $.trim(form.county.value),
                 }
             },
-        }).then(function(result) { // then execute this function on the result
+        }).then(function(result) {   // then execute this function on the result
             if (result.error) {
-                var errorDiv = document.getElementById('card-errors'); // if there is an error we get an error message
+                var errorDiv = document.getElementById('card-errors');  // if there is an error we get an error message
                 var html = `
                     <span class="icon" role="alert">
                     <i class="fas fa-times"></i>
@@ -113,15 +113,12 @@ form.addEventListener('submit', function(ev) {
                 card.update({ 'disabled': false});
                 $('#submit-button').attr('disabled', false);
             } else {
-                if (result.paymentIntent.status === 'succeeded') { // if status come back as succeeded we submit the form
-                    // form.submit();
+                if (result.paymentIntent.status === 'succeeded') {   // if status come back as succeeded we submit the form
+                    form.submit();
                 }
             }
         });
-    }).fail(function () {  // failure function, which will be triggered
-        // if our view sends a 400 bad request response. And in that case, we'll just
-        // reload the page to show the user the error message from the view
-        // just reload the page, the error will be in django messages
+    }).fail(function () {  // failure function, which will be triggered if our view sends a 400 bad request response. And in that case, we'll just reload the page to show the user the error message from the view just reload the page, the error will be in django messages
         location.reload();
     })
 });

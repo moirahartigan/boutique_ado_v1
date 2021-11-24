@@ -37,7 +37,7 @@ class StripeWH_Handler:
 
         # Clean data in the shipping details
         for field, value in shipping_details.address.items():  # to ensure the data is in the same form as what we want in our database. 
-        # replace any empty strings in the shipping details with none
+            # replace any empty strings in the shipping details with none
             if value == "":
                 shipping_details.address[field] = None
 
@@ -57,7 +57,7 @@ class StripeWH_Handler:
                 profile.save()
 
         order_exists = False  # assum the order doesnt exist
-        attempt = 1 
+        attempt = 1
         while attempt <= 5:
             try:  # try to get the order using all the information from the payment intent. And I'm using the iexact lookup field to make it an exact match but case-insensitive
                 order = Order.objects.get(
@@ -74,12 +74,12 @@ class StripeWH_Handler:
                     original_bag=bag,
                     stripe_pid=pid,
                 )
-                order_exists = True  
+                order_exists = True
                 break  # if the order is found break out of the loop
             except Order.DoesNotExist:
                 attempt += 1
                 time.sleep(1)
-        if order_exists: # if the order is found we'll set order exists to true and return a 200 HTTP response to stripe, with the message that we verified the order already exists.
+        if order_exists:  # if the order is found we'll set order exists to true and return a 200 HTTP response to stripe, with the message that we verified the order already exists.
             return HttpResponse(
                 content=f'Webhook received: {event["type"]} | SUCCESS: Verified order already in database',
                 status=200)

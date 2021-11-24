@@ -106,6 +106,7 @@ def checkout(request):
             currency=settings.STRIPE_CURRENCY,
         )
 
+        # Attempt to prefill the form with any info the user maintains in their profile
         # check whether the user is authenticated.
         # And if so we'll get their profile and use the initial parameter on the order form
         # to pre-fill all its fields with the relevant information.
@@ -127,7 +128,7 @@ def checkout(request):
             except UserProfile.DoesNotExist:
                 order_form = OrderForm()
         else:
-            order_form = OrderForm() # create an instance of our order form. Which will be empty for now.
+            order_form = OrderForm()  # create an instance of our order form. Which will be empty for now.
 
     if not stripe_public_key:
         messages.warning(request, 'Stripe public key is missing. \
@@ -135,7 +136,7 @@ def checkout(request):
 
     template = 'checkout/checkout.html'
     context = {
-        'order_form': order_form, # context containing the order form
+        'order_form': order_form,  # context containing the order form
         'stripe_public_key': stripe_public_key,
         'client_secret': intent.client_secret,
     }
