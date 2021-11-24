@@ -1,4 +1,7 @@
 from django.http import HttpResponse
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
 
 from .models import Order, OrderLineItem
 from products.models import Product
@@ -13,6 +16,23 @@ class StripeWH_Handler:
 
     def __init__(self, request):  # The init method of the class is a setup method that's called every time an instance of the class is created.
         self.request = request  # we're going to use it to assign the request as an attribute of the class just in case we need to access any attributes of the request coming from stripe.
+
+    def _send_confirmation_email(self, order):  # starts with an underscore as will only be used inside this class
+        """Send the user a confirmation email"""
+        cust_email = order.email
+        subject = render_to_string(  # render to strings
+            'checkout/confirmation_emails/confirmation_email_subject.txt',
+            {'order': order})
+        body = render_to_string(
+            'checkout/confirmation_emails/confirmation_email_body.txt',
+            {'order': order, 'contact_email': settings.DEFAULT_FROM_EMAIL})
+
+        send_mail(
+            subject,
+            body,
+            settings.DEFAULT_FROM_EMAIL,
+            [cust_email]
+        )
 
     def handle_event(self, event):  # create a class method called handle event which will take the event stripe is sending us and simply return an HTTP response indicating it was received.
         """
@@ -80,6 +100,7 @@ class StripeWH_Handler:
                 attempt += 1
                 time.sleep(1)
         if order_exists:  # if the order is found we'll set order exists to true and return a 200 HTTP response to stripe, with the message that we verified the order already exists.
+            self._send_confirmation_email(order)
             return HttpResponse(
                 content=f'Webhook received: {event["type"]} | SUCCESS: Verified order already in database',
                 status=200)
@@ -128,6 +149,7 @@ class StripeWH_Handler:
                 return HttpResponse(
                     content=f'Webhook received: {event["type"]} | ERROR: {e}',
                     status=500)
+        self._send_confirmation_email(order)        
         return HttpResponse(  # if anything goes wrong I'll just delete the order if it was created. And return a 500 server error response to stripe. This will cause stripe to automatically try the webhook again later
             content=f'Webhook received: {event["type"]} | SUCCESS: Created order in webhook',
             status=200)
