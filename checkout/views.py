@@ -1,5 +1,7 @@
 
-from django.shortcuts import render, redirect, reverse, get_object_or_404, HttpResponse
+from django.shortcuts import (
+    render, redirect, reverse, get_object_or_404, HttpResponse
+)
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.conf import settings
@@ -37,7 +39,8 @@ def checkout(request):
     stripe_public_key = settings.STRIPE_PUBLIC_KEY
     stripe_secret_key = settings.STRIPE_SECRET_KEY
 
-    if request.method == 'POST':  # check whether the method is post.That means we should also wrap the current code into an else block to handle the get requests. In the post method code we will need the shopping bag.
+    if request.method == 'POST':  # check whether the method is post.That
+        # means we should also wrap the current code into an else block to handle the get requests. In the post method code we will need the shopping bag.
         bag = request.session.get('bag', {})
 
         form_data = {  # form data will be in a dictionary
@@ -68,7 +71,7 @@ def checkout(request):
                             quantity=item_data,
                         )
                         order_line_item.save()
-                    else:  # otherwise we iterate through each size and create a line item accordingly 
+                    else:  # otherwise we iterate through each size and create a line item accordingly
                         for size, quantity in item_data['items_by_size'].items():
                             order_line_item = OrderLineItem(
                                 order=order,
